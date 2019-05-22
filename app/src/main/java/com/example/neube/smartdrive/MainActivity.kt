@@ -1,14 +1,22 @@
 package com.example.neube.smartdrive
 
+import android.widget.TextView
+import androidx.lifecycle.Observer
+import com.example.neube.smartdrive.R
+import com.google.firebase.database.DataSnapshot
 import android.app.Activity
+import androidx.lifecycle.ViewModel
 import android.app.Application
 import android.content.ContentValues
+import android.os.Build.VERSION_CODES.O
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
-import com.example.neube.smartdrive.controlamotores.MotorAction.Companion.direcaoum
-import com.example.neube.smartdrive.controlamotores.MotorAction.Companion.pararum
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelProviders
+import com.example.neube.smartdrive.controlamotores.SmartModel
+import com.example.neube.smartdrive.controlamotores.SmartViewModel
 import com.google.android.things.pio.Gpio
 import java.util.*
 import com.google.android.things.pio.GpioCallback
@@ -24,11 +32,9 @@ import com.neuberfran.androidthings.driver.SmartDrive.SmartDrive.*
 import timber.log.Timber
 import java.io.IOException
 
-class MainActivity : Activity() {
+class MainActivity : AppCompatActivity() {
 
     internal var TAG = MainActivity::class.simpleName
-
- //   private var dbReference: DatabaseReference? = null
 
     var xdatabase = FirebaseDatabase.getInstance()
     var myRef = xdatabase.getReference()
@@ -37,6 +43,13 @@ class MainActivity : Activity() {
     var fcmotorumb = myRef.child("home/fcmotorumb")
     var fcmotordoisa = myRef.child("home/fcmotordoisa")
     var fcmotorboisb = myRef.child("home/fcmotordoisb")
+
+    var direcaodois: Int? = null
+    var parardois: Int? = null
+
+    var direcaoum: Int? = null
+    var pararum: Int? = null
+
 
 //    var DirecaoDois = myRef.child("home/Direcao")
 //    var PararDois = myRef.child("home/PararUm")
@@ -51,7 +64,7 @@ class MainActivity : Activity() {
 
     var mSmartDrive: SmartDrive? = null
 
-    var janelauma: Long? = null
+    var janelauma: Int? = null
 
     internal var I2C_PIN_NAME = "I2C1"
     internal val I2C_ADDRESS_SMARTDRIVE = 0x1B
@@ -66,7 +79,35 @@ class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Log.i(ContentValues.TAG, "Volto 191.00 191.00 191.00")
+//        val motorviewModel = ViewModelProviders.of(this)
+//            .get(SmartViewModel::class.java)
+//
+//        val liveData = motorviewModel.dataSnapshotLiveData
+
+        val viewModel = ViewModelProviders.of(this).get(SmartViewModel::class.java)
+
+        val liveData = viewModel.dataSnapshotLiveData
+
+        Log.i(ContentValues.TAG, "Volto 191.00 191.00 191.00" + liveData)
+
+        liveData.observe(this, Observer<DataSnapshot> { dataSnapshot ->
+
+            if (dataSnapshot != null) {
+                // update the UI here with values in the snapshot
+                val pararum = dataSnapshot.child("PararUm").getValue(Int::class.java)
+
+                Log.i(ContentValues.TAG, "Volto 191.1.00 191.1.00 191.1.00"+pararum)
+
+                val direcaoum = dataSnapshot.child("DirecaoUm").getValue(Int::class.java)
+
+                Log.i(ContentValues.TAG, "Volto 191.2.00 191.2.00 191.2.00"+direcaoum)
+
+            }
+        })
+
+        Log.i(ContentValues.TAG, "Volto 192.00 192.00 192.00" + liveData)
+
+        Log.i(ContentValues.TAG, "Volto 192.00 192.00 192.00"+pararum)
 
         mSmartDrive = SmartDrive(I2C_PIN_NAME, I2C_ADDRESS_SMARTDRIVE)
 
@@ -75,8 +116,6 @@ class MainActivity : Activity() {
         var FCMotorUmA: Gpio? = null
 
         val manager = PeripheralManager.getInstance()
-
-        Log.i(TAG, "101 101 101")
 
         try {
             // Step 1. Create GPIO connection.
@@ -94,13 +133,10 @@ class MainActivity : Activity() {
 
                 fcmotoruma.setValue(1)
 
-                Log.i(TAG, "passei 1 passei 1 passei 1")
-
             }else if (!FCMotorUmA.value) {
 
                fcmotoruma.setValue(0)
 
-                Log.i(TAG, "passei 2 passei 2 passei 2")
             }
 
               fcmotoruma.setValue(1)
@@ -127,24 +163,24 @@ class MainActivity : Activity() {
 
                 Log.i(TAG, "passei 4 passei 4 passei 4")
 
+                Log.i(TAG, "passei 911 passei 911 passei 911"+FCMotorUmA.value)
+
                 while (!FCMotorUmA.value) {
 
-               //     if (pararum!!.equals(0)) {
+                    if (pararum == 0) {
+                   // if (pararum!!.equals(0)) {
 
-                  while (pararum!!.equals(0)) {
-                      Log.i(TAG, "passei 411 passei 411 passei 411" + pararum)
-                //      Log.i(TAG, "passei 412 passei 412 passei 412" + direcaoum)
-                      mSmartDrive?.SmartDrive_Run_Unlimited(SmartDrive_Motor_1, SmartDrive_Direction_Forward, 100)
+                        Log.i(TAG, "passei 411 passei 411 passei 411" + pararum)
+                        Log.i(TAG, "passei 412 passei 412 passei 412" + direcaoum)
+                        mSmartDrive?.SmartDrive_Run_Unlimited(SmartDrive_Motor_1, SmartDrive_Direction_Reverse, 100)
 
-                  }
-            //        }else if (pararum!!.equals(1)) {
+                    }else if (pararum == 1) {
 
-          //             mSmartDrive?.SmartDrive_Stop(SmartDrive_Motor_1, SmartDrive_Next_Action_Brake)
-          //          }
+                       mSmartDrive?.SmartDrive_Stop(SmartDrive_Motor_1, SmartDrive_Next_Action_Brake)
 
+                    }
 
-
-
+                    Log.i(TAG, "nao entrei no if and else if 912 912 912"+FCMotorUmA.value)
 
                 }
             }
@@ -152,7 +188,7 @@ class MainActivity : Activity() {
             fcmotoruma.setValue(1)
 
         } catch (e: IOException) {
-            Log.w(TAG, "Error reading GPIO 101 101 101")
+            Log.w(TAG, "Error reading GPIO")
         }
 
         // Return true to keep callback active.
@@ -195,3 +231,4 @@ class MainActivity : Activity() {
     private fun wait1sec() = Thread.sleep(5000)
 
 }
+
