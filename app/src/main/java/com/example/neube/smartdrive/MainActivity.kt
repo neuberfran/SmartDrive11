@@ -79,33 +79,55 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        val motorviewModel = ViewModelProviders.of(this)
-//            .get(SmartViewModel::class.java)
+//        val viewModel = ViewModelProviders.of(this).get(SmartViewModel::class.java)
 //
-//        val liveData = motorviewModel.dataSnapshotLiveData
+//        val liveData = viewModel.dataSnapshotLiveData
 
-        val viewModel = ViewModelProviders.of(this).get(SmartViewModel::class.java)
 
-        val liveData = viewModel.dataSnapshotLiveData
+        val hotStockViewModel = ViewModelProviders.of(this).get(SmartViewModel::class.java)
 
-        Log.i(ContentValues.TAG, "Volto 191.00 191.00 191.00" + liveData)
 
-        liveData.observe(this, Observer<DataSnapshot> { dataSnapshot ->
+        val hotStockLiveData = hotStockViewModel.getHotStockLiveData
+    //    val hotStockLiveData = hotStockViewModel.getSmartViewModel()
 
-            if (dataSnapshot != null) {
-                // update the UI here with values in the snapshot
-                val pararum = dataSnapshot.child("PararUm").getValue(Int::class.java)
+        Log.i(ContentValues.TAG, "Volto 191.00 191.00 191.00" + hotStockLiveData)
 
-                Log.i(ContentValues.TAG, "Volto 191.1.00 191.1.00 191.1.00"+pararum)
+//        liveData.observe(this, Observer<DataSnapshot> { dataSnapshot ->
+//
+//            if (dataSnapshot != null) {
+//                // update the UI here with values in the snapshot
+//                val pararum = dataSnapshot.child("PararUm").getValue(Int::class.java)
+//
+//                Log.i(ContentValues.TAG, "Volto 191.1.00 191.1.00 191.1.00"+pararum)
+//
+//                val direcaoum = dataSnapshot.child("DirecaoUm").getValue(Int::class.java)
+//
+//                Log.i(ContentValues.TAG, "Volto 191.2.00 191.2.00 191.2.00"+direcaoum)
+//
+//            }
+//        })
 
-                val direcaoum = dataSnapshot.child("DirecaoUm").getValue(Int::class.java)
 
-                Log.i(ContentValues.TAG, "Volto 191.2.00 191.2.00 191.2.00"+direcaoum)
+        hotStockLiveData.observe(this, Observer<DataSnapshot> { hotStock ->
 
+    //    hotStockLiveData.observe
+
+        fun onChanged(hotStock: SmartModel?) {
+                if (hotStock!=null) {
+
+                    val pararum = hotStock.PararUm
+
+                    Log.i(ContentValues.TAG, "Volto 191.1.00 191.1.00 191.1.00" + pararum)
+
+                    val direcaoum = hotStock.DirecaoUm
+
+                    Log.i(ContentValues.TAG, "Volto 191.2.00 191.2.00 191.2.00" + direcaoum)
+
+                }
             }
         })
 
-        Log.i(ContentValues.TAG, "Volto 192.00 192.00 192.00" + liveData)
+        Log.i(ContentValues.TAG, "Volto 192.00 192.00 192.00" + hotStockLiveData)
 
         Log.i(ContentValues.TAG, "Volto 192.00 192.00 192.00"+pararum)
 
