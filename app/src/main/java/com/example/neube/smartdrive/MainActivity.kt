@@ -26,6 +26,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.example.neube.smartdrive.device.BoardDefaults
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.*
+import androidx.arch.core.util.Function
 
 import com.neuberfran.androidthings.driver.SmartDrive.SmartDrive
 import com.neuberfran.androidthings.driver.SmartDrive.SmartDrive.*
@@ -79,38 +80,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        val viewModel = ViewModelProviders.of(this).get(SmartViewModel::class.java)
-//
-//        val liveData = viewModel.dataSnapshotLiveData
-
-
         val hotStockViewModel = ViewModelProviders.of(this).get(SmartViewModel::class.java)
 
+        val hotStockLiveData = hotStockViewModel.hotStockLiveData
 
-        val hotStockLiveData = hotStockViewModel.getHotStockLiveData
-    //    val hotStockLiveData = hotStockViewModel.getSmartViewModel()
-
-        Log.i(ContentValues.TAG, "Volto 191.00 191.00 191.00" + hotStockLiveData)
-
-//        liveData.observe(this, Observer<DataSnapshot> { dataSnapshot ->
-//
-//            if (dataSnapshot != null) {
-//                // update the UI here with values in the snapshot
-//                val pararum = dataSnapshot.child("PararUm").getValue(Int::class.java)
-//
-//                Log.i(ContentValues.TAG, "Volto 191.1.00 191.1.00 191.1.00"+pararum)
-//
-//                val direcaoum = dataSnapshot.child("DirecaoUm").getValue(Int::class.java)
-//
-//                Log.i(ContentValues.TAG, "Volto 191.2.00 191.2.00 191.2.00"+direcaoum)
-//
-//            }
-//        })
-
-
-        hotStockLiveData.observe(this, Observer<DataSnapshot> { hotStock ->
-
-    //    hotStockLiveData.observe
+        hotStockLiveData.observe(this, Observer<SmartViewModel.Deserializer> {
 
         fun onChanged(hotStock: SmartModel?) {
                 if (hotStock!=null) {
@@ -127,9 +101,9 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        Log.i(ContentValues.TAG, "Volto 192.00 192.00 192.00" + hotStockLiveData)
+        Log.i(ContentValues.TAG, "Volto 193.00 193.00 193.00" + hotStockLiveData)
 
-        Log.i(ContentValues.TAG, "Volto 192.00 192.00 192.00"+pararum)
+        Log.i(ContentValues.TAG, "Volto 194.00 194.00 194.00"+pararum)
 
         mSmartDrive = SmartDrive(I2C_PIN_NAME, I2C_ADDRESS_SMARTDRIVE)
 
@@ -183,24 +157,22 @@ class MainActivity : AppCompatActivity() {
 
                 fcmotoruma.setValue(0)
 
-                Log.i(TAG, "passei 4 passei 4 passei 4")
-
                 Log.i(TAG, "passei 911 passei 911 passei 911"+FCMotorUmA.value)
 
                 while (!FCMotorUmA.value) {
 
-                    if (pararum == 0) {
+                 //   if (pararum == 0) {
                    // if (pararum!!.equals(0)) {
 
                         Log.i(TAG, "passei 411 passei 411 passei 411" + pararum)
                         Log.i(TAG, "passei 412 passei 412 passei 412" + direcaoum)
                         mSmartDrive?.SmartDrive_Run_Unlimited(SmartDrive_Motor_1, SmartDrive_Direction_Reverse, 100)
 
-                    }else if (pararum == 1) {
+                 //   }else if (pararum == 1) {
 
-                       mSmartDrive?.SmartDrive_Stop(SmartDrive_Motor_1, SmartDrive_Next_Action_Brake)
+                   //    mSmartDrive?.SmartDrive_Stop(SmartDrive_Motor_1, SmartDrive_Next_Action_Brake)
 
-                    }
+                  //  }
 
                     Log.i(TAG, "nao entrei no if and else if 912 912 912"+FCMotorUmA.value)
 

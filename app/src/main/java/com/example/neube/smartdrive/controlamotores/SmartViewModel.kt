@@ -7,12 +7,12 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import java.util.function.Function
+import androidx.arch.core.util.Function
 
 class SmartViewModel : ViewModel() {
 
     // This is a LiveData<DataSnapshot> from part 1
-    private val liveData = FirebaseQueryLiveData(HOT_STOCK_REF)
+    var liveData = FirebaseQueryLiveData(HOT_STOCK_REF)
 
     var hotStockLiveData = Transformations.map(liveData) { Deserializer()!!}
 
