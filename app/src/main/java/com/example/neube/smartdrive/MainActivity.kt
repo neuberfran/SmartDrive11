@@ -40,22 +40,21 @@ class MainActivity : AppCompatActivity() {
     var xdatabase = FirebaseDatabase.getInstance()
     var myRef = xdatabase.getReference()
 
-    var fcmotoruma = myRef.child("home/fcmotoruma")
-    var fcmotorumb = myRef.child("home/fcmotorumb")
-    var fcmotordoisa = myRef.child("home/fcmotordoisa")
-    var fcmotorboisb = myRef.child("home/fcmotordoisb")
+    var fcmotoruma = myRef.child("smartmodel/fcmotoruma")
+    var fcmotorumb = myRef.child("smartmodel/fcmotorumb")
+    var fcmotordoisa = myRef.child("smartmodel/fcmotordoisa")
+    var fcmotorboisb = myRef.child("smartmodel/fcmotordoisb")
 
     var direcaodois: Int? = null
     var parardois: Int? = null
+//
+    var direcaoum: Int? = 1
+    var pararum: Int? = 1
 
-    var direcaoum: Int? = null
-    var pararum: Int? = null
-
-
-//    var DirecaoDois = myRef.child("home/Direcao")
-//    var PararDois = myRef.child("home/PararUm")
-//    var DirecaoUm = myRef.child("home/DirecaoUm")
-//    var PararUm = myRef.child("home/PararUm")
+//    var DirecaoDois = myRef.child("smartmodel/Direcao")
+//    var PararDois = myRef.child("smartmodel/PararUm")
+//    var direcaoum = myRef.child("smartmodel/DirecaoUm")
+//    var pararum = myRef.child("smartmodel/PararUm")
 //
 //    var direcatodoisa: Long? = null
 //    var paradoisa: Long? = null
@@ -84,24 +83,23 @@ class MainActivity : AppCompatActivity() {
 
         val hotStockLiveData = hotStockViewModel.hotStockLiveData
 
-        hotStockLiveData.observe(this, Observer<SmartViewModel.Deserializer> {
+        hotStockLiveData.observe(this, Observer<SmartModel> { smartmodel ->
 
-        fun onChanged(hotStock: SmartModel?) {
-                if (hotStock!=null) {
+                if (smartmodel!=null) {
 
-                    val pararum = hotStock.PararUm
+                    val pararum = smartmodel.PararUm
 
                     Log.i(ContentValues.TAG, "Volto 191.1.00 191.1.00 191.1.00" + pararum)
 
-                    val direcaoum = hotStock.DirecaoUm
+                    var direcaoum = smartmodel.DirecaoUm
 
                     Log.i(ContentValues.TAG, "Volto 191.2.00 191.2.00 191.2.00" + direcaoum)
 
                 }
-            }
+
         })
 
-        Log.i(ContentValues.TAG, "Volto 193.00 193.00 193.00" + hotStockLiveData)
+        Log.i(ContentValues.TAG, "Volto 193.00 193.00 193.00"+hotStockLiveData)
 
         Log.i(ContentValues.TAG, "Volto 194.00 194.00 194.00"+pararum)
 
@@ -144,6 +142,8 @@ class MainActivity : AppCompatActivity() {
 
     private val mCallback = GpioCallback { FCMotorUmA ->
 
+        val todoItem = SmartModel.create()
+
         try {
             Log.i(TAG, "GPIO changed, button 101 101 101" + FCMotorUmA.value)
 
@@ -162,17 +162,17 @@ class MainActivity : AppCompatActivity() {
                 while (!FCMotorUmA.value) {
 
                  //   if (pararum == 0) {
-                   // if (pararum!!.equals(0)) {
+                    if (todoItem.PararUm.equals(0)) {
 
-                        Log.i(TAG, "passei 411 passei 411 passei 411" + pararum)
-                        Log.i(TAG, "passei 412 passei 412 passei 412" + direcaoum)
+                        Log.i(TAG, "passei 411 passei 411 passei 411" + todoItem.PararUm)
+                        Log.i(TAG, "passei 412 passei 412 passei 412" + todoItem.DirecaoUm)
                         mSmartDrive?.SmartDrive_Run_Unlimited(SmartDrive_Motor_1, SmartDrive_Direction_Reverse, 100)
 
-                 //   }else if (pararum == 1) {
+                    }else if (todoItem.PararUm == 1) {
 
-                   //    mSmartDrive?.SmartDrive_Stop(SmartDrive_Motor_1, SmartDrive_Next_Action_Brake)
+                       mSmartDrive?.SmartDrive_Stop(SmartDrive_Motor_1, SmartDrive_Next_Action_Brake)
 
-                  //  }
+                    }
 
                     Log.i(TAG, "nao entrei no if and else if 912 912 912"+FCMotorUmA.value)
 
@@ -212,7 +212,6 @@ class MainActivity : AppCompatActivity() {
             } catch (e: IOException) {
                 Log.e(TAG, "Error on PeripheralIO API", e)
             }
-
         }
         mSmartDrive?.close()
 
